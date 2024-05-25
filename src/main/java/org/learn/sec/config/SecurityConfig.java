@@ -1,7 +1,5 @@
 package org.learn.sec.config;
 
-import org.learn.sec.config.handler.LoginFailure;
-import org.learn.sec.config.handler.LoginSuccess;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -21,19 +19,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-//                    .formLogin(Customizer.withDefaults());
-//                                     form.loginPage("/loginpage")
-                    .formLogin(form -> form.loginProcessingUrl("/loginproc")
-                                           // ignored coz of handlers
-//                                           .defaultSuccessUrl("/", false)
-//                                           .failureUrl("/failed")
-                                           .usernameParameter("id")
-                                           .passwordParameter("pw")
-                                           .successHandler(new LoginSuccess())
-                                           .failureHandler(new LoginFailure())
-                                           .permitAll()
-
-                    );
+                    .formLogin(Customizer.withDefaults())
+                    .rememberMe(re -> re.alwaysRemember(false)
+                                        .tokenValiditySeconds(3600)
+                                        .userDetailsService(userDetailsService())
+                                        .rememberMeParameter("remember")
+                                        .rememberMeCookieName("myCookie")
+                                        .key("sec"));
 
         return httpSecurity.build();
     }
