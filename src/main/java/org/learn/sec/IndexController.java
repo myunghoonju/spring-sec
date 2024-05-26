@@ -15,6 +15,11 @@ public class IndexController {
         return "Hello World";
     }
 
+    @GetMapping("/logoutsuccess")
+    public String logoutsuccess() {
+        return "logoutsuccess";
+    }
+
     @GetMapping("/loginpage")
     public String loginpage() {
         return "loginpage";
