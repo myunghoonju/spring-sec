@@ -1,7 +1,9 @@
 package org.learn.sec.config;
 
-import java.io.IOException;
-
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,19 +12,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -67,16 +63,6 @@ public class SecurityConfig {
     // priority over yml setting security.user
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails userB = User.withUsername("user")
-                                .password("{noop}1234")
-                                .roles("USER")
-                                .build();
-
-        UserDetails userC = User.withUsername("user2")
-                                .password("{noop}1234")
-                                .roles("USER")
-                                .build();
-
-        return new InMemoryUserDetailsManager(userB, userC);
+        return new CustomUserDetailsService();
     }
 }
