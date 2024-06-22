@@ -1,9 +1,13 @@
 package org.learn.sec.config;
 
-import org.springframework.security.core.userdetails.User;
+import org.learn.sec.config.user.Account;
+import org.learn.sec.config.user.CustomUserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.util.List;
 
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -13,9 +17,8 @@ public class CustomUserDetailsService implements UserDetailsService {
             return null;
         }
 
-        return User.withUsername("userA")
-                                .password("{noop}1234")
-                                .roles("USER")
-                                .build();
+        return new CustomUserDetails(new Account("userA" ,
+                                                 "{noop}1234",
+                                                 List.of(new SimpleGrantedAuthority("USER"))));
     }
 }
