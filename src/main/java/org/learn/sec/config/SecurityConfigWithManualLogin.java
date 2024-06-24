@@ -8,39 +8,31 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
-//@Configuration
-//@EnableWebSecurity
-public class SecurityConfigWithContext {
+@Configuration
+@EnableWebSecurity
+public class SecurityConfigWithManualLogin {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        AuthenticationManager manager = builder.build();
-
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/api/login").permitAll()
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/login").permitAll()
                                                .anyRequest().authenticated())
-
-            .formLogin(Customizer.withDefaults())
-            //.securityContext(ctx -> ctx.requireExplicitSave(false))
-            .authenticationManager(manager)
-            .addFilterBefore(customAuthenticationFilter(http, manager),
-                             UsernamePasswordAuthenticationFilter.class);
+//                                               .formLogin(Customizer.withDefaults())
+            .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
 
-    public CustomAuthenticationFilter customAuthenticationFilter(HttpSecurity http, AuthenticationManager manager) throws Exception {
-        CustomAuthenticationFilter filter = new CustomAuthenticationFilter(http);
-        filter.setAuthenticationManager(manager);
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
 
-        return filter;
     }
 
     @Bean
