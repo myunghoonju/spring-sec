@@ -3,7 +3,6 @@ package org.learn.sec;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-// filter based security framework
 @SpringBootApplication
 public class SecApplication {
 
